@@ -428,8 +428,8 @@
             <classpath refid="JavaCS.classpath"/>
         </junit>
     </target>
-    <target depends="WikiSearchTest" name="test" />
-    <target name="WikiSearchTest">
+    <target depends="Driver" name="test" />
+    <target name="Driver">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
