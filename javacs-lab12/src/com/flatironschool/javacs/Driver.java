@@ -18,9 +18,54 @@ import org.junit.Test;
 import redis.clients.jedis.Jedis;  
                                                                                 
 public class Driver {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    String prompt = "Options - s: search a term ; i: index a topic ; " +
+                    "r: remove all indexed topics ; q: quit : ";
+    Jedis jedis = JedisMaker.make();
+    JedisIndex index = new JedisIndex(jedis);
     Map<String, Integer> map = new HashMap<String, Integer>();
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
-  }
+
+    System.out.print(prompt);
+    String option = input.nextLine();
+    while(!option.equals("q")) {
+      switch(option) {
+        case "i": 
+        System.out.print("Enter a topic to insert: ");
+        String topic = input.nextLine();
+        String url = "https://en.wikipedia.org/wiki/" + topic;
+        WikiCrawler wc = new WikiCrawler(url, index);
+        String res = wc.crawl(false);
+        System.out.print(prompt);
+        option = input.nextLine();
+        break;
+    
+        case "r":
+        System.out.println("Indexed topics removed");
+        index.deleteURLSets();
+        index.deleteTermCounters();
+        System.out.print(prompt);
+        option = input.nextLine();
+        break;
+
+        case "s":
+        System.out.print("Enter a term to search for: ");
+        String term = input.nextLine();
+        WikiSearch search1 = WikiSearch.search(term, index);
+        search1.print();
+        System.out.print(prompt);
+        option = input.nextLine();
+        break;
+        
+        default: 
+        System.out.println("Not a valid option");
+        System.out.print(prompt);
+        option = input.nextLine();
+        break;
+      }
+    }
+      
+  }                                     
+
 }
