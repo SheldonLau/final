@@ -1,7 +1,7 @@
 //package com.flatironschool.javacs;                                              
 
 import static org.junit.Assert.assertThat;                                      
-import static org.hamcrest.CoreMatchers.*;                                      
+import static org.hamcrest.CoreMatchers.*;                                     
                                                                                 
 import java.io.IOException;                                                     
 import java.util.Scanner;
@@ -26,6 +26,7 @@ public class Driver {
     Map<String, Integer> map = new HashMap<String, Integer>();
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
+    System.out.println(index.termCounterKeys());
 
     System.out.print(prompt);
     String option = input.nextLine();
@@ -42,9 +43,10 @@ public class Driver {
         break;
     
         case "r":
-        System.out.println("Indexed topics removed");
+        System.out.println("Indexed topics removed:");
+        System.out.println(index.termCounterKeys());
         index.deleteURLSets();
-        index.deleteTermCounters();
+        index.deleteAllKeys();
         System.out.print(prompt);
         option = input.nextLine();
         break;

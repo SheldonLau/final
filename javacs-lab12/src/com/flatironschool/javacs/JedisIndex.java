@@ -97,6 +97,45 @@ public class JedisIndex {
 		return map;
 	}
 
+  public Map<String, Integer> getTFIDF(String term) {
+    Map<String, Integer> map = new HashMap<String, Integer>();
+    Set<String> urls = getURLs(term);
+    int idf = (int)(idf(term));
+    for(String url: urls) {
+      Integer count = getCount(url, term);
+      int tfidf = (int)(count * idf);
+      map.put(url, tfidf);
+    }
+    return map;
+  }
+   public double idf(String term) {                            
+     int docs = termCounterKeys().size();                                   
+     double idf = Math.log(docs / docFreq(term));                          
+     return idf;                                                                  
+    }                                                                             
+                                                                                  
+    /**                                                                           
+     * Calculate number of document term occurs                                   
+     *                                                                            
+     * @param term                                                                
+     * @param index                                                               
+     */                                                                           
+    public Integer docFreq(String term) {                       
+      // number of documents that contain term                                    
+      int numDocs = 0;                                                            
+      
+      Set<String> urls = getURLs(term);
+                                                                                  
+      for(String url : urls) {                                 
+        Integer count = getCount(url, term);                                         
+        // document contains term at least once                                   
+        if(count > 0) {                                                            
+          numDocs++;                                                              
+        }                                                                         
+      }                                                                           
+      return numDocs;                                                             
+    }                    
+
 	/**
 	 * Looks up a term and returns a map from URL to count.
 	 * 
