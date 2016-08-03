@@ -19,6 +19,7 @@ import redis.clients.jedis.Jedis;
                                                                                 
 public class Driver {
   public static void main(String[] args) throws IOException {
+    Ranker test = new Ranker();
     String prompt = "Options - s: search a term ; i: index a topic ; " +
                     "r: remove all indexed topics ; q: quit : ";
     Jedis jedis = JedisMaker.make();
