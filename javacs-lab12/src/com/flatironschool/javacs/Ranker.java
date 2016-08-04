@@ -42,23 +42,36 @@ public class Ranker {
 //    Integer ranking = map.get(url);
 //    return ranking==null ? 0: ranking;
 //  }
-  
+  /**
+   * Determines if url is linked from another page
+   * 
+   * @param src
+   * @param dest
+   * @return 
+   */
   public boolean isLinked(String src, String dest) throws IOException{
     Elements paragraphs = wf.fetchWikipedia(src);                               
-    for(Element paragraph : paragraphs) {
-      Iterable<Node> iter = new WikiNodeIterable(paragraph);
-      for(Node node : iter) {
-        if(node instanceof Element) {
-          Element element = (Element) node;
-          Elements links = element.select("a[href]");
-          for(Element link : links) {
-            String absHref = link.attr("abs:href");
-            if(absHref.equals(dest)) {
-              return true;
-            }
-          }
-          
-        }
+//    for(Element paragraph : paragraphs) {
+//      Iterable<Node> iter = new WikiNodeIterable(paragraph);
+//      for(Node node : iter) {
+//        if(node instanceof Element) {
+//          Element element = (Element) node;
+//          Elements links = element.select("a[href]");
+//          for(Element link : links) {
+//            String absHref = link.attr("abs:href");
+//            if(absHref.equals(dest)) {
+//              return true;
+//            }
+//          }
+//          
+//        }
+//      }
+//    }
+    Elements links = paragraphs.select("a[href]");
+    for(Element link : links) {
+      String absHref = link.attr("abs:href");
+      if(absHref.equals(dest)) {
+        return true;
       }
     }
     return false;                                                                       

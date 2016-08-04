@@ -209,8 +209,8 @@ public class WikiSearch {
 	 * @param index
 	 * @return
 	 */
-	public static WikiSearch search(String term, JedisIndex index) {
-		Map<String, Integer> map = index.getTFIDF(term);
+	public static WikiSearch search(String term, JedisIndex index)throws IOException {
+		Map<String, Integer> map = index.getRank(term);
 		return new WikiSearch(map);
 	}
 

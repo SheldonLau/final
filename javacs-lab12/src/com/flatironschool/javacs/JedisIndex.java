@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.jsoup.nodes.Element;                                                 
+import org.jsoup.nodes.Node;                                                    
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import redis.clients.jedis.Jedis;
@@ -96,15 +99,56 @@ public class JedisIndex {
 		}
 		return map;
 	}
+  
+  public Integer linkCount(String dest) throws IOException{
+    int lc = 0;
+    Set<String> urls = termCounterKeys();
+    for(String url: urls) {
+      boolean linked = isLinked(url.substring(12), dest);
+      if(linked) {
+        lc++;
+      }
+    }
+    return lc;
+  }
+  /**
+   * Determines if url is linked from another page
+   * @param src
+   * @param dest
+   * @return
+   */
+ 
+  public boolean isLinked(String src, String dest) throws IOException {
+    WikiFetcher wf = new WikiFetcher();
+    Elements paragraphs = wf.fetchWikipedia(src);
+    Elements links = paragraphs.select("a[href]");
+    for(Element link : links) {
+      String absHref = link.attr("abs:href");
+      if(absHref.equals(dest)) {
+        return true;
+      }
+    }
+    return false;
+  } 
 
-  public Map<String, Integer> getTFIDF(String term) {
+  public Map<String, Integer> getRank(String term) throws IOException {
     Map<String, Integer> map = new HashMap<String, Integer>();
     Set<String> urls = getURLs(term);
     int idf = (int)(idf(term));
     for(String url: urls) {
+      int tfidf;
       Integer count = getCount(url, term);
-      int tfidf = (int)(count * idf);
-      map.put(url, tfidf);
+      Integer lc = linkCount(url);
+      if(idf > 0) {
+        tfidf = (int)(count * idf);
+      }
+      else {
+        tfidf = count;
+      }
+      if(lc > 0) {
+        tfidf = tfidf * lc;
+      }
+      map.put(url, count);
     }
     return map;
   }
@@ -112,7 +156,11 @@ public class JedisIndex {
      int docs = termCounterKeys().size();                                   
      double idf = Math.log(docs / docFreq(term));                          
      return idf;                                                                  
-    }                                                                             
+   }
+
+//   public Map<String, Integer> getRank(Map<String, Integer> map) {
+//     for()
+//   }                                                                             
                                                                                   
     /**                                                                           
      * Calculate number of document term occurs                                   
@@ -284,6 +332,10 @@ public class JedisIndex {
 	public Set<String> termCounterKeys() {
 		return jedis.keys("TermCounter:*");
 	}
+
+  public Set<String> keys() {
+    return jedis.keys("*");
+  }
 
 	/**
 	 * Deletes all URLSet objects from the database.

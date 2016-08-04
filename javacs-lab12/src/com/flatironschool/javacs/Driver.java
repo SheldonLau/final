@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.HashMap;                                                       
 import java.util.List;                                                          
 import java.util.Map.Entry;                                                     
+import java.util.Set;
                                                                                 
 import org.jsoup.select.Elements;                                               
 import org.junit.After;                                                         
@@ -27,7 +28,11 @@ public class Driver {
     Map<String, Integer> map = new HashMap<String, Integer>();
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
-    System.out.println(index.termCounterKeys());
+    Set<String> urls = index.termCounterKeys();
+    for(String url : urls) {
+      System.out.println(url.substring(12));
+    }
+//    System.out.println(index.termCounterKeys());
 
     System.out.print(prompt);
     String option = input.nextLine();
