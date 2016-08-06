@@ -81,6 +81,9 @@ public class WikiSearch {
 	 */
 	public void print() {
 		List<Entry<String, Integer>> entries = sort();
+      if(entries.size() < 1) {
+        System.out.println("LOG STATEMENTTTTTTTTTTTTTTTTTTTTTTTTTTtt");
+      }
 		for (Entry<String, Integer> entry: entries) {
 			System.out.println(entry);
 		}

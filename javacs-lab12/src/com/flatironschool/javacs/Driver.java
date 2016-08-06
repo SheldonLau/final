@@ -20,7 +20,7 @@ import redis.clients.jedis.Jedis;
                                                                                 
 public class Driver {
   public static void main(String[] args) throws IOException {
-    Ranker test = new Ranker();
+    LinkRanker test = new LinkRanker("ab");
     String prompt = "Options - s: search a term ; i: index a topic ; " +
                     "r: remove all indexed topics ; q: quit : ";
     Jedis jedis = JedisMaker.make();
@@ -28,9 +28,9 @@ public class Driver {
     Map<String, Integer> map = new HashMap<String, Integer>();
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
-    Set<String> urls = index.termCounterKeys();
+    Set<String> urls = index.URLs();
     for(String url : urls) {
-      System.out.println(url.substring(12));
+      System.out.println(url);
     }
 //    System.out.println(index.termCounterKeys());
 

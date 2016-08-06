@@ -52,6 +52,10 @@ public class JedisIndex {
 		return "TermCounter:" + url;
 	}
 
+  private String linkRankerKey(String pair) {
+    return "LinkRanker:" + pair;
+  }
+
 	/**
 	 * Checks whether we have a TermCounter for a given URL.
 	 * 
@@ -130,6 +134,16 @@ public class JedisIndex {
     }
     return false;
   } 
+  public void links(String src) throws IOException {
+    WikiFetcher wf = new WikiFetcher();
+    Elements paragraphs = wf.fetchWikipedia(src);
+    Elements links = paragraphs.select("a[href]");
+    for(Element link : links) {
+      String absHref = link.attr("abs:href");
+        System.out.println(absHref);
+      }
+    }
+ 
 
   public Map<String, Integer> getRank(String term) throws IOException {
     Map<String, Integer> map = new HashMap<String, Integer>();
@@ -148,19 +162,20 @@ public class JedisIndex {
       if(lc > 0) {
         tfidf = tfidf * lc;
       }
-      map.put(url, count);
+      map.put(url, tfidf);
     }
     return map;
   }
    public double idf(String term) {                            
      int docs = termCounterKeys().size();                                   
-     double idf = Math.log(docs / docFreq(term));                          
+     double idf = 0;
+     int frequency = docFreq(term);
+     if(frequency > 0) {
+       idf = Math.log(docs / docFreq(term));                          
+     }
+
      return idf;                                                                  
    }
-
-//   public Map<String, Integer> getRank(Map<String, Integer> map) {
-//     for()
-//   }                                                                             
                                                                                   
     /**                                                                           
      * Calculate number of document term occurs                                   
@@ -174,14 +189,14 @@ public class JedisIndex {
       
       Set<String> urls = getURLs(term);
                                                                                   
-      for(String url : urls) {                                 
-        Integer count = getCount(url, term);                                         
-        // document contains term at least once                                   
-        if(count > 0) {                                                            
-          numDocs++;                                                              
-        }                                                                         
-      }                                                                           
-      return numDocs;                                                             
+//      for(String url : urls) {                                 
+//        Integer count = getCount(url, term);                                         
+//        // document contains term at least once                                   
+//        if(count > 0) {                                                            
+//          numDocs++;                                                              
+//        }                                                                         
+//      }                                                                           
+      return urls.size();                                                             
     }                    
 
 	/**
@@ -240,11 +255,11 @@ public class JedisIndex {
 		// make a TermCounter and count the terms in the paragraphs
 		TermCounter tc = new TermCounter(url);
 		tc.processElements(paragraphs);
-		
+
 		// push the contents of the TermCounter to Redis
 		pushTermCounterToRedis(tc);
 	}
-
+  
 	/**
 	 * Pushes the contents of the TermCounter to Redis.
 	 * 
@@ -271,6 +286,25 @@ public class JedisIndex {
 		return res;
 	}
 
+//	public List<Object> pushLinkRankerToRedis(LinkRanker lr) {
+//		Transaction t = jedis.multi();
+//		
+//		String pair = lr.getPair();
+//		String hashname = linkRankerKey(pair);
+//		
+//		// if this page has already been indexed; delete the old hash
+//		t.del(hashname);
+//
+//		// for each term, add an entry in the termcounter and a new
+//		// member of the index
+//		for (LinkPair lp : lr.keySet()) {
+//			boolean isLinked = lr.get(lp);
+//			t.hset(hashname, pair, String.valueOf(isLinked));
+//			// t.sadd(urlSetKey(term), url);
+//		}
+//		List<Object> res = t.exec();
+//		return res;
+//	}
 	/**
 	 * Prints the contents of the index.
 	 * 
@@ -333,8 +367,18 @@ public class JedisIndex {
 		return jedis.keys("TermCounter:*");
 	}
 
-  public Set<String> keys() {
-    return jedis.keys("*");
+  /**
+   * Returns all indexed URLs
+   *
+   * @return
+   */
+  public Set<String> URLs() {
+    Set<String> tcKeys = termCounterKeys();
+    Set<String> urls = new HashSet<String>();
+    for(String url : tcKeys) {
+      urls.add(url.substring(12));
+    }
+    return urls;
   }
 
 	/**
