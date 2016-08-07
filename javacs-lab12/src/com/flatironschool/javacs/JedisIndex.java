@@ -146,23 +146,27 @@ public class JedisIndex {
  
 
   public Map<String, Integer> getRank(String term) throws IOException {
+    Set<String> indexedUrls = URLs();
+    LinkRanker lr = new LinkRanker();
+    Map<String, Integer> linkMap = lr.processLinks(indexedUrls);
     Map<String, Integer> map = new HashMap<String, Integer>();
+    System.out.println("LINK MAP !!!! " + linkMap);
     Set<String> urls = getURLs(term);
     int idf = (int)(idf(term));
     for(String url: urls) {
-      int tfidf;
       Integer count = getCount(url, term);
-      Integer lc = linkCount(url);
+      int rank = count;
+      int lc = 0;
+      if(linkMap.get(url) != null) {
+        lc = linkMap.get(url);
+      }
       if(idf > 0) {
-        tfidf = (int)(count * idf);
+        rank = (int)(count * idf);
       }
-      else {
-        tfidf = count;
-      }
-      if(lc > 0) {
-        tfidf = tfidf * lc;
-      }
-      map.put(url, tfidf);
+//      if( lc > 0) {
+//        rank = rank + lc;
+//      }
+      map.put(url, rank);
     }
     return map;
   }

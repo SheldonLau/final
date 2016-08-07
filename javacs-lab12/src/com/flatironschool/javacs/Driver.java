@@ -20,7 +20,7 @@ import redis.clients.jedis.Jedis;
                                                                                 
 public class Driver {
   public static void main(String[] args) throws IOException {
-    LinkRanker test = new LinkRanker("ab");
+    LinkRanker test = new LinkRanker();
     String prompt = "Options - s: search a term ; i: index a topic ; " +
                     "r: remove all indexed topics ; q: quit : ";
     Jedis jedis = JedisMaker.make();
@@ -29,6 +29,7 @@ public class Driver {
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
     Set<String> urls = index.URLs();
+//    index.links("https://en.wikipedia.org/wiki/Mathematics");
     for(String url : urls) {
       System.out.println(url);
     }

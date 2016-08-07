@@ -17,21 +17,19 @@ import org.jsoup.select.Elements;
  */
 
 public class LinkRanker {
-  private Map<LinkPair, Boolean> map;
-  private String pair;
+  private Map<String, Integer> map;
   
-  public LinkRanker(String pair) {
-    this.map = new HashMap<LinkPair, Boolean>();
-    this.pair = pair;
+  public LinkRanker() {
+    this.map = new HashMap<String, Integer>();
   }
 
-  public String getPair() {
-    return pair;
-  }
+//  public String getPair() {
+//    return pair;
+//  }
 
-  public Set<LinkPair> keySet() {
-    return map.keySet();
-  }
+//  public Set<LinkPair> keySet() {
+//    return map.keySet();
+//  }
 
   /**
    * Returns set of links contained in page
@@ -56,12 +54,22 @@ public class LinkRanker {
    * 
    * @param links
    */
-  public void processLinks(Set<String> links) throws IOException{
+  public Map<String, Integer>  processLinks(Set<String> links) throws IOException{
     for(String dest : links) {
       for(String src : links) {
         processPair(src, dest);
       }
     }
+
+    return map;
+  }
+
+  public void incrementLinkRank(String url) {
+    put(url, get(url) + 1);
+  }
+
+  public void put(String url, int lc) {
+    map.put(url, lc);
   }
 
   /**
@@ -72,12 +80,9 @@ public class LinkRanker {
    */
   public void processPair(String src, String dest) throws IOException {
     Set<String> links = getLinks(src);
-    LinkPair pair = new LinkPair(src, dest);
+//    LinkPair pair = new LinkPair(src, dest);
     if(links.contains(dest)) {
-      map.put(pair, true);
-    }
-    else {
-      map.put(pair, false);
+      incrementLinkRank(dest);
     }
   }
 
@@ -87,8 +92,8 @@ public class LinkRanker {
    * @param pair
    * @return
    */
-  public boolean get(LinkPair pair) {
-    boolean isLinked = map.get(pair);
-    return isLinked;
+  public Integer get(String url) {
+    Integer linkCount = map.get(url);
+    return linkCount == null ? 0 : linkCount;
   }
 }
