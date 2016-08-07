@@ -104,53 +104,19 @@ public class JedisIndex {
 		return map;
 	}
   
-  public Integer linkCount(String dest) throws IOException{
-    int lc = 0;
-    Set<String> urls = termCounterKeys();
-    for(String url: urls) {
-      boolean linked = isLinked(url.substring(12), dest);
-      if(linked) {
-        lc++;
-      }
-    }
-    return lc;
-  }
   /**
-   * Determines if url is linked from another page
-   * @param src
-   * @param dest
+   * looks up a term and returns map from url to rank
+   *
+   * @param term
    * @return
    */
- 
-  public boolean isLinked(String src, String dest) throws IOException {
-    WikiFetcher wf = new WikiFetcher();
-    Elements paragraphs = wf.fetchWikipedia(src);
-    Elements links = paragraphs.select("a[href]");
-    for(Element link : links) {
-      String absHref = link.attr("abs:href");
-      if(absHref.equals(dest)) {
-        return true;
-      }
-    }
-    return false;
-  } 
-  public void links(String src) throws IOException {
-    WikiFetcher wf = new WikiFetcher();
-    Elements paragraphs = wf.fetchWikipedia(src);
-    Elements links = paragraphs.select("a[href]");
-    for(Element link : links) {
-      String absHref = link.attr("abs:href");
-        System.out.println(absHref);
-      }
-    }
- 
-
   public Map<String, Integer> getRank(String term) throws IOException {
     Set<String> indexedUrls = URLs();
     LinkRanker lr = new LinkRanker();
+
+    // get count of how many tie
     Map<String, Integer> linkMap = lr.processLinks(indexedUrls);
     Map<String, Integer> map = new HashMap<String, Integer>();
-    System.out.println("LINK MAP !!!! " + linkMap);
     Set<String> urls = getURLs(term);
     int idf = (int)(idf(term));
     for(String url: urls) {
@@ -163,19 +129,27 @@ public class JedisIndex {
       if(idf > 0) {
         rank = (int)(count * idf);
       }
-//      if( lc > 0) {
-//        rank = rank + lc;
-//      }
+      if( lc > 0) {
+        rank = rank + lc;
+      }
       map.put(url, rank);
     }
     return map;
   }
+
+  /**
+   * Calculate inverse document frequency
+   *
+   * @param term
+   * @param index
+   * @return
+   */
    public double idf(String term) {                            
-     int docs = termCounterKeys().size();                                   
+     double docs = termCounterKeys().size();                                   
      double idf = 0;
      int frequency = docFreq(term);
      if(frequency > 0) {
-       idf = Math.log(docs / docFreq(term));                          
+       idf = Math.log(docs / frequency);                          
      }
 
      return idf;                                                                  
@@ -188,18 +162,9 @@ public class JedisIndex {
      * @param index                                                               
      */                                                                           
     public Integer docFreq(String term) {                       
-      // number of documents that contain term                                    
-      int numDocs = 0;                                                            
       
       Set<String> urls = getURLs(term);
                                                                                   
-//      for(String url : urls) {                                 
-//        Integer count = getCount(url, term);                                         
-//        // document contains term at least once                                   
-//        if(count > 0) {                                                            
-//          numDocs++;                                                              
-//        }                                                                         
-//      }                                                                           
       return urls.size();                                                             
     }                    
 
@@ -290,25 +255,6 @@ public class JedisIndex {
 		return res;
 	}
 
-//	public List<Object> pushLinkRankerToRedis(LinkRanker lr) {
-//		Transaction t = jedis.multi();
-//		
-//		String pair = lr.getPair();
-//		String hashname = linkRankerKey(pair);
-//		
-//		// if this page has already been indexed; delete the old hash
-//		t.del(hashname);
-//
-//		// for each term, add an entry in the termcounter and a new
-//		// member of the index
-//		for (LinkPair lp : lr.keySet()) {
-//			boolean isLinked = lr.get(lp);
-//			t.hset(hashname, pair, String.valueOf(isLinked));
-//			// t.sadd(urlSetKey(term), url);
-//		}
-//		List<Object> res = t.exec();
-//		return res;
-//	}
 	/**
 	 * Prints the contents of the index.
 	 * 
