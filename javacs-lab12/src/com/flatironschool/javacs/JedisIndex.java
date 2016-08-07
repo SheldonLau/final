@@ -114,7 +114,6 @@ public class JedisIndex {
     Set<String> indexedUrls = URLs();
     LinkRanker lr = new LinkRanker();
 
-    // get count of how many tie
     Map<String, Integer> linkMap = lr.processLinks(indexedUrls);
     Map<String, Integer> map = new HashMap<String, Integer>();
     Set<String> urls = getURLs(term);

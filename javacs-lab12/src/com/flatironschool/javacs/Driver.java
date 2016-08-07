@@ -29,11 +29,9 @@ public class Driver {
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
     Set<String> urls = index.URLs();
-//    index.links("https://en.wikipedia.org/wiki/Mathematics");
     for(String url : urls) {
       System.out.println(url);
     }
-//    System.out.println(index.termCounterKeys());
 
     System.out.print(prompt);
     String option = input.nextLine();
@@ -51,7 +49,7 @@ public class Driver {
     
         case "r":
         System.out.println("Indexed topics removed:");
-        System.out.println(index.termCounterKeys());
+        System.out.println(index.URLs());
         index.deleteURLSets();
         index.deleteAllKeys();
         System.out.print(prompt);
