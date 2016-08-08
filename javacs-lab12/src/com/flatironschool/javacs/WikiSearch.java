@@ -33,37 +33,6 @@ public class WikiSearch {
 		this.map = map;
 	}
 
-  /**
-   * Calculate inverse document frequency
-   *
-   * @param term
-   * @param index
-   */
-  public double idf(String term, JedisIndex index) {
-   int docs = index.termCounterKeys().size();
-   double idf = Math.log(docs / docFreq(term, index));
-   return idf; 
-  }
-	
-  /**
-   * Calculate number of document term occurs
-   *
-   * @param term
-   * @param index
-   */
-  public Integer docFreq(String term, JedisIndex index) {
-    // number of documents that contain term
-    int numDocs = 0;
-
-    for(String url : index.termCounterKeys()) {
-      Integer freq = getRelevance(url);
-      // document contains term at least once
-      if(freq > 0) {
-        numDocs++;
-      }
-    }
-    return numDocs;
-  }
 	/**
 	 * Looks up the relevance of a given URL.
 	 * 

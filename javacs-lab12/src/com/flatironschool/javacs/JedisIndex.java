@@ -223,7 +223,6 @@ public class JedisIndex {
 		// make a TermCounter and count the terms in the paragraphs
 		TermCounter tc = new TermCounter(url);
 		tc.processElements(paragraphs);
-
 		// push the contents of the TermCounter to Redis
 		pushTermCounterToRedis(tc);
 	}

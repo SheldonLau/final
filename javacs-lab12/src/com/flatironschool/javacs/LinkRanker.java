@@ -23,14 +23,6 @@ public class LinkRanker {
     this.map = new HashMap<String, Integer>();
   }
 
-//  public String getPair() {
-//    return pair;
-//  }
-
-//  public Set<LinkPair> keySet() {
-//    return map.keySet();
-//  }
-
   /**
    * Returns set of links contained in page
    *
