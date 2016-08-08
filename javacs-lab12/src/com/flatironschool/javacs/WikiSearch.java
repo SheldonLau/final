@@ -102,8 +102,12 @@ public class WikiSearch {
       if(intersected) {
         int thisResult = this.getRelevance(url);
         int thatResult = that.getRelevance(url);
-        int relevance = Math.min(thisResult, thatResult);
-//        int relevance = totalRelevance(thisResult, thatResult);
+        double weight = 1.0*thisResult/thatResult;
+        if(thatResult < thisResult) {
+          weight = 1.0*thatResult/thisResult;
+        }
+
+        int relevance = (int)(totalRelevance(thisResult, thatResult)*weight);
         intersection.put(url, relevance);
       }
       

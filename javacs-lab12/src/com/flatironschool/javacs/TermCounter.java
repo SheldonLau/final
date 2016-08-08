@@ -85,10 +85,6 @@ public class TermCounter {
 			String term = array[i];
       if(!STOP_SET.contains(term)) {
 			  incrementTermCount(term);
-    System.out.println("SUCCESSFULLY INDEXED");
-      }
-      else {
-    System.out.println("NOT INDEXED THIS IS A STOP WORD");
       }
 		}
 	}
