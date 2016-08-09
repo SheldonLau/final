@@ -1,0 +1,33 @@
+body {
+    background: linear-gradient("#3250FA", "#61EDDA"); /* Standard syntax */
+    background: -webkit-linear-gradient("#3250FA", "#61EDDA"); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient("#3250FA", "#61EDDA"); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient("#3250FA", "#61EDDA"); /* For Firefox 3.6 to 15 */
+    background: white; /* For browsers that do not support gradients */
+}
+
+h1 {
+    font-family: 'Pacifico', cursive;
+    font-size:40px;
+    margin:0px;
+    padding:0px;
+    text-align:center;
+}
+
+h3 {
+    font-family: 'Arimo', sans-serif;
+    font-size:12px;
+    line-height: 13px;
+    margin:0px;
+    text-align:center;
+}
+.searchButton {
+    margin:0 auto;
+    height:30px;
+    line-height: 30px;
+    width:150px;
+    border:solid 2px;
+    margin-top:50px;
+    text-align:center;
+    border-radius:200px;
+}
