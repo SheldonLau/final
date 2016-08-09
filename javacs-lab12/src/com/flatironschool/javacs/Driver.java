@@ -23,7 +23,8 @@ public class Driver {
     LinkRanker test = new LinkRanker();
     TermCounter testing = new TermCounter("testing");
     String prompt = "Options - s: search a term ; i: index a topic ; " +
-                    "r: remove all indexed topics ; q: quit : ";
+                    "r: remove all indexed topics ; b: perform boolean search ; " + 
+                    "q: quit : ";
     Jedis jedis = JedisMaker.make();
     JedisIndex index = new JedisIndex(jedis);
     Map<String, Integer> map = new HashMap<String, Integer>();
@@ -57,10 +58,37 @@ public class Driver {
         option = input.nextLine();
         break;
 
+        case "b":
+        System.out.print("Options - a: and query ;  o: or query ; m: minus query : ");
+        String subOption = input.nextLine();
+        System.out.print("Enter two words separated by a space: ");
+        String words = input.nextLine();
+        String[] splitWords = words.split(" ");
+        WikiSearch search1 = WikiSearch.search(splitWords[0], index);
+        WikiSearch search2 = WikiSearch.search(splitWords[1], index);
+        if(subOption.equals("a")) {
+          WikiSearch intersection = search1.and(search2);
+          intersection.print();
+        }
+        else if(subOption.equals("o")) {
+          WikiSearch union = search1.or(search2);
+          union.print();
+        }
+        else if(subOption.equals("m")) {
+          WikiSearch difference = search1.minus(search2);
+          difference.print();
+        }
+        else {
+          System.out.println("Invalid query");
+        }
+        System.out.print(prompt);
+        option = input.nextLine();
+        break;
+
         case "s":
         System.out.print("Enter a term to search for: ");
         String term = input.nextLine();
-        WikiSearch search1 = WikiSearch.search(term, index);
+        search1 = WikiSearch.search(term, index);
         search1.print();
         System.out.print(prompt);
         option = input.nextLine();
