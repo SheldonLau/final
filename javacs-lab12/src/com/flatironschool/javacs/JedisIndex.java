@@ -51,7 +51,9 @@ public class JedisIndex {
 	private String termCounterKey(String url) {
 		return "TermCounter:" + url;
 	}
-
+  
+  /**
+   * Returns the Redis key for a link pair's rank
   private String linkRankerKey(String pair) {
     return "LinkRanker:" + pair;
   }

@@ -102,6 +102,9 @@ public class WikiSearch {
       if(intersected) {
         int thisResult = this.getRelevance(url);
         int thatResult = that.getRelevance(url);
+
+        // use ratio of the ratio of each search as a weight
+        // values a more balanced search result
         double weight = 1.0*thisResult/thatResult;
         if(thatResult < thisResult) {
           weight = 1.0*thatResult/thisResult;

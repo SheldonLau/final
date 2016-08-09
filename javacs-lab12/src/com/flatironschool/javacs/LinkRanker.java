@@ -26,12 +26,16 @@ public class LinkRanker {
   /**
    * Returns set of links contained in page
    *
+   * @param src
    * @return
    */
   public Set<String> getLinks(String src) throws IOException {
+    // set of all links contained in a url
     Set<String> linkSet = new HashSet<String>();
     WikiFetcher wf = new WikiFetcher();
     Elements paragraphs = wf.fetchWikipedia(src);
+
+    // add all links to set
     Elements links = paragraphs.select("a[href]");
     for(Element link : links) {
       String absHref = link.attr("abs:href");
@@ -47,6 +51,7 @@ public class LinkRanker {
    * @param links
    */
   public Map<String, Integer>  processLinks(Set<String> links) throws IOException{
+    // compare every link to every other link
     for(String dest : links) {
       for(String src : links) {
         processPair(src, dest);
@@ -56,10 +61,21 @@ public class LinkRanker {
     return map;
   }
 
+  /**
+   * Increments the counter associated with 'url'.
+   * 
+   * @param url
+   */
   public void incrementLinkRank(String url) {
     put(url, get(url) + 1);
   }
 
+  /**
+   * Adds url to map with given link ranking 
+   * 
+   * @param url
+   * @param lc
+   */
   public void put(String url, int lc) {
     map.put(url, lc);
   }
@@ -72,7 +88,6 @@ public class LinkRanker {
    */
   public void processPair(String src, String dest) throws IOException {
     Set<String> links = getLinks(src);
-//    LinkPair pair = new LinkPair(src, dest);
     if(links.contains(dest)) {
       incrementLinkRank(dest);
     }

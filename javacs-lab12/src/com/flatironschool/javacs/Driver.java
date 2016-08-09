@@ -31,6 +31,7 @@ public class Driver {
     Scanner input = new Scanner(System.in);
     WikiSearch search = new WikiSearch(map);
     Set<String> urls = index.URLs();
+    System.out.println("Indexed URLs");
     for(String url : urls) {
       System.out.println(url);
     }
@@ -63,9 +64,14 @@ public class Driver {
         String subOption = input.nextLine();
         System.out.print("Enter two words separated by a space: ");
         String words = input.nextLine();
+
+        // pull out words from input and store in array
         String[] splitWords = words.split(" ");
+
+        // perform search on each word
         WikiSearch search1 = WikiSearch.search(splitWords[0], index);
         WikiSearch search2 = WikiSearch.search(splitWords[1], index);
+
         if(subOption.equals("a")) {
           WikiSearch intersection = search1.and(search2);
           intersection.print();
