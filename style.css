@@ -1,11 +1,39 @@
-body {
-    background: linear-gradient("#3250FA", "#61EDDA"); /* Standard syntax */
-    background: -webkit-linear-gradient("#3250FA", "#61EDDA"); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient("#3250FA", "#61EDDA"); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient("#3250FA", "#61EDDA"); /* For Firefox 3.6 to 15 */
-    background: white; /* For browsers that do not support gradients */
+html {
+    /*background-color:#292929;*/
+    background-image:url("assets/hexabump.png");
 }
-
+.mainContent {
+    top:50%;
+    left:50%;
+    position:absolute;
+    transform: translate(-50%, -50%);
+    background: rgba(108,201,193,1);
+    background: -moz-linear-gradient(top, rgba(108,201,193,1) 0%, rgba(93,217,198,1) 22%, rgba(120,240,220,1) 54%, rgba(165,255,224,1) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(108,201,193,1)), color-stop(22%, rgba(93,217,198,1)), color-stop(54%, rgba(120,240,220,1)), color-stop(100%, rgba(165,255,224,1)));
+    background: -webkit-linear-gradient(top, rgba(108,201,193,1) 0%, rgba(93,217,198,1) 22%, rgba(120,240,220,1) 54%, rgba(165,255,224,1) 100%);
+    background: -o-linear-gradient(top, rgba(108,201,193,1) 0%, rgba(93,217,198,1) 22%, rgba(120,240,220,1) 54%, rgba(165,255,224,1) 100%);
+    background: -ms-linear-gradient(top, rgba(108,201,193,1) 0%, rgba(93,217,198,1) 22%, rgba(120,240,220,1) 54%, rgba(165,255,224,1) 100%);
+    background: linear-gradient(to bottom, rgba(108,201,193,1) 0%, rgba(93,217,198,1) 22%, rgba(120,240,220,1) 54%, rgba(165,255,224,1) 100%);
+    color:white;
+    overflow:hidden;
+}
+.rectangle {
+    height:90%;
+    width:400px;
+    border-radius:10px;
+}
+.circle {
+    height:400px;
+    width:400px;
+    border-radius:50%;
+}
+.textContent{
+    width:100%;
+    top:50%;
+    left:50%;
+    position:absolute;
+    transform: translate(-50%, -50%);
+}
 h1 {
     font-family: 'Pacifico', cursive;
     font-size:40px;
@@ -26,8 +54,34 @@ h3 {
     height:30px;
     line-height: 30px;
     width:150px;
-    border:solid 2px;
     margin-top:50px;
     text-align:center;
     border-radius:200px;
+    color:white;
+    border:solid 2px white;
+    background-color:transparent;
+    font-family:'Arimo', sans-serif;
+}
+a {
+    text-decoration: none;
+}
+a :visisted {
+    text-decoration: none;
+}
+.searchButton:hover {
+    background-color:white;
+    border:solid 2px #292929;
+    color:#292929;
+}
+/***********SEARCH.JSP***********/
+
+input[type=text] {
+    padding:5px;
+    font-family:'Arimo', sans-serif;
+    font-size:20px;
+}
+
+form {
+    text-align:center;
+    margin-top:10px;
 }

@@ -7,7 +7,16 @@
         <link href='https://fonts.googleapis.com/css?family=Pacifico|Arimo:400,400italic' rel='stylesheet' type='text/css'>
     </head>
     <body>
-        <h1>CodeU final project</h1>
-        <h3>Sheldon Lau & Cayla Vinzons</h3>
-        <div class="searchButton"><span>search</span></div>
+
+        <div class="mainContent circle">
+            <div class="textContent">
+                <h1>CodeU final project</h1>
+                <h3>Sheldon Lau & Cayla Vinzons</h3>
+                <form method="get" action="http://localhost:9999/project/search">
+                    <input type="text" name="searchString">
+                    <input type="submit" value="Search">
+                </form>
+            </div>
+        </div>
+    </body>
 </html>
