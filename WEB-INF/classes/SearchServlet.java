@@ -32,16 +32,25 @@ public class SearchServlet extends HttpServlet {
         //         "r: remove all indexed topics ; q: quit : ";
         // System.out.print("Enter a term to search for: ");
         // String term = input.nextLine();
+        WikiSearch search1;
         String searchString = request.getParameter("searchString");
         //operators/second term
-        // String operator;
-        // if (searchString.contains("and") || searchString.contains("or")) {
-        //     operator="and";
-        // }
-
-        String oeprator = request.get
-        WikiSearch search1 = WikiSearch.search(searchString, index);
-
+        if (searchString.contains("+")) {
+            ///find int start and end of and
+            int[] arr = getStartandEndIndexes("+");
+            List<String> searchterms = getStrings(searchString, arr[0], arr[1]);
+            search1 = WikiSearch.search(searchterms.get(0), index).add(WikiSearch.search(searchterms.get(1), index))
+        } else if (searchString.contains("-")) {
+            int[] arr = getStartandEndIndexes("-");
+            List<String> searchterms = getStrings(searchString, arr[0], arr[1]);
+            search1 = WikiSearch.search(searchterms.get(0), index).add(WikiSearch.search(searchterms.get(1), index))
+        } else if (searchString.contains("or")) {
+            int[] arr = getStartandEndIndexes("or");
+            List<String> searchterms = getStrings(searchString, arr[0], arr[1]);
+            search1 = WikiSearch.search(searchterms.get(0), index).add(WikiSearch.search(searchterms.get(1), index))
+        } else {//1 term
+            WikiSearch search1 = WikiSearch.search(searchString, index);
+        }
       // Set the response MIME type of the response message
       response.setContentType("text/html");
       // Allocate a output writer to write the response message into the network socket
@@ -58,6 +67,8 @@ public class SearchServlet extends HttpServlet {
          out.println("<div class='mainContent rectangle'");
          out.println("<div class='textContent'");
          out.println("<h1>Search Results</h1>");
+         if (searchString.equals(""))
+            out.println("<p> You can't have an empty search!</p>")
          out.println("<p>" + search1 + "</p>");
          out.println("<a href='search.jsp'>new search</a>");
          out.println("</div></div>");
@@ -65,5 +76,31 @@ public class SearchServlet extends HttpServlet {
       } finally {
          out.close();
       }
+   }
+   private List<String> getStrings(String searchString, int opbeg, int opend) {
+       List<String> list = new List<String>();
+       list.add(searchString.substring(0,opbeg).trim());
+       list.add(searchString.substring(opend+1).trim());
+       return list;
+   }
+   private int[] getStartandEndIndexes(String pattern, String text) {
+       //brute force for now
+       int[] arr = new int[2];
+       int patlength = pattern.length();
+       int textlength = text.length();
+
+       for (int i = 0; i <= textlength - patlength; i++) {
+           int j;
+           for (j = 0; j < patlength; j++) {
+               if (text.charAt(i + j) != pattern.charAt(j))
+                break;
+           }
+           if (j == patlength) {
+               arr[0] = i;
+               arr[1] = i + textlength;
+               return arr;
+           }
+       }
+       return arr;
    }
 }
